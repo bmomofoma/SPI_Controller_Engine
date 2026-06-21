@@ -7,7 +7,7 @@ Standard SPI typically utilizes a 4-wire bus (SCLK, MOSI, MISO, CS). However, st
 * **The Decision:** The MISO (Master-In, Slave-Out) line and its associated RX shift registers were completely avoided in this design. 
 * **The Result:** This 3-wire decision the main FSM highly optimized, reduces the overall logic gate count, and prevents unnecessary routing congestion on the silicon.
 
-![3-Wire SPI Optimization Diagram](docs/3wire_diagram.jpg)
+![3-Wire SPI Optimization Diagram](DOCS/3wire_diagram.jpg)
 
 ### 2. Clock Synthesis and Domain Division
 The global system clock provided by the FPGA development board (Basys 3) runs at 100 MHz. While the FPGA fabric handles this easily, driving an external OLED display at 100 MHz will violate the peripheral's maximum SCLK frequency ratings (typically capped around 10 MHz for these display controllers), leading to corrupted frames.
