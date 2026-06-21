@@ -20,5 +20,5 @@ Interfacing with bare-metal display controllers requires strict adherence to sta
 * **Clock Phase (`CPHA=0`):** Data is driven onto the `mosi` line on the *falling edge* of the clock, and the OLED samples the data on the *rising edge*.
 * **The FSM Design:** To achieve this cleanly, the shift register logic is explicitly split into a two-phase toggle system within the FSM's `SHIFT` state. This guarantees that the `mosi` pin always provides a massive setup time margin before the rising edge strikes, preventing any metastability or missed bits at the peripheral end.
 
-![3-Wire SPI Optimization Diagram](docs/Waveform.png)
+![3-Wire SPI Optimization Diagram](DOCS/Waveform.png)
 
