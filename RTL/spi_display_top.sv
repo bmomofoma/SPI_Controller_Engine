@@ -2,8 +2,8 @@
 
 module spi_display_top (
     input  logic       clk,       // Physical 100 MHz oscillator on Basys 3
-    input  logic       rst_n,     // Reset button
-    input  logic       start,     // Kickoff pulse
+    input  logic       rst_n,     
+    input  logic       start,    
     input  logic [7:0] tx_data,   // Byte to send
     output logic       ready,     // Status flag
     
@@ -16,7 +16,7 @@ module spi_display_top (
     // Internal interconnect wire to bridge the modules
     logic spi_ce_wire;
 
-    // 1. Instantiate the clock divider
+    // the clock divider
     spi_clk_div #(
         .DIVISOR(10) // 100 MHz / 10 = 10 MHz pulses (gives 5 MHz SCLK)
     ) clk_divider (
@@ -25,7 +25,7 @@ module spi_display_top (
         .spi_ce(spi_ce_wire)
     );
 
-    // 2. Instantiate the SPI Master serialization engine
+    // the SPI Master serialization engine
     spi_master master_engine (
         .clk(clk),
         .rst_n(rst_n),
