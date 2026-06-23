@@ -2,12 +2,10 @@
 
 module spi_master (
     input  logic       clk,       // Global 100 MHz board clock
-    input  logic       rst_n,     // Asynchronous active-low reset
+    input  logic       rst_n,     
     input  logic       spi_ce,    // 10 MHz clock enable strobe from divider (for 5 MHz SCLK)
-    
-    // System/CPU Interface
     input  logic       start,     // Pulse high for 1 cycle to kick off transmission
-    input  logic [7:0] tx_data,   // Parallel byte data to send over the air
+    input  logic [7:0] tx_data,   
     output logic       ready,     // High if the SPI engine is idle and ready for data
     
     // Physical SPI Bus Interface pins to external hardware
@@ -28,12 +26,10 @@ module spi_master (
     // Internal tracking registers
     logic [7:0] shift_reg; 
     logic [2:0] bit_cnt;   
-    logic       sclk_reg;   // Internal registered tracker for the output clock
-    logic       phase;      // Tracks half-cycle phase (0 = first half, 1 = second half)
-
-    // ====================================================
+    logic       sclk_reg;   
+    logic       phase;    
+    
     // FINITE STATE MACHINE (FSM) SEQUENTIAL BLOCK
-    // ====================================================
     always_ff @(posedge clk or negedge rst_n) begin 
         if (!rst_n) begin
             current_state <= IDLE;
@@ -48,17 +44,14 @@ module spi_master (
                     sclk_reg <= 1'b0; // SPI Mode 0 idles low
                     phase    <= 1'b0;
      
-                    // Accept start pulse at any point while free
                     if (start) begin
                         shift_reg     <= tx_data; // Safely latch data input
-                        bit_cnt       <= '0;      // Clear out tracker
+                        bit_cnt       <= '0;      
                         current_state <= START;   // Advance to synchronization staging
                     end 
                 end
 
                 START: begin
-                    // Spin and wait here until the clock divider fires its next pulse.
-                    // This aligns the FSM execution perfectly onto a division boundary.
                     if (spi_ce) begin 
                         current_state <= SHIFT;
                     end
@@ -78,7 +71,7 @@ module spi_master (
                                 current_state <= STOP;
                             end else begin
                                 bit_cnt   <= bit_cnt + 3'd1;
-                                shift_reg <= {shift_reg[6:0], 1'b0}; // Shift to next bit
+                                shift_reg <= {shift_reg[6:0], 1'b0}; 
                             end
                         end
                     end
@@ -95,9 +88,7 @@ module spi_master (
         end
     end 
 
-    // ====================================================
     // COMBINATIONAL BUS OUTPUTS
-    // ====================================================
     assign ready = (current_state == IDLE);
     assign cs_n  = (current_state == IDLE);
     assign mosi  = shift_reg[7]; // Continuously drive out the MSB
